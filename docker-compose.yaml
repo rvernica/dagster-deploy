@@ -10,6 +10,7 @@ services:
     restart: always
     environment:
       DAGSTER_CURRENT_IMAGE: dagster-university
+      DUCKDB_DATABASE: data/staging/data.duckdb
     env_file:
       - .env
     networks:
@@ -31,6 +32,8 @@ services:
       - -w
       - workspace.yaml
     container_name: webserver
+    environment:
+      DAGSTER_CODE_UNI: code-uni
     env_file:
       - .env
     expose:
@@ -56,6 +59,8 @@ services:
       - dagster-daemon
       - run
     restart: on-failure
+    environment:
+      DAGSTER_CODE_UNI: code-uni
     env_file:
       - .env
     volumes: # Make docker client accessible so we can launch containers using host docker

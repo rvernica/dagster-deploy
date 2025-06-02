@@ -1,5 +1,6 @@
 load_from:
   - grpc_server:
-      host: code-uni               # This MUST match the service name in docker-compose.yml
-      port: 4000                   # The port the gRPC server listens on INSIDE its container
-      location_name: "university"  # Your desired display name in the UI
+      host:
+        env: DAGSTER_CODE_UNI     # This MUST match the service name in docker-compose.yml
+      port: 4000                  # The port the gRPC server listens on INSIDE its container
+      location_name: "university" # Your desired display name in the UI

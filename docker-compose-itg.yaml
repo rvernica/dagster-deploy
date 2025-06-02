@@ -1,0 +1,51 @@
+services:
+  code-uni:
+    image: ghcr.io/rvernica/dagster-university:latest
+    restart: always
+    environment:
+      DAGSTER_CURRENT_IMAGE: dagster-university
+    env_file:
+      - .env
+    networks:
+      - dagster
+
+  webserver:
+    image: ghcr.io/rvernica/dagster-deploy:latest
+    entrypoint:
+      - dagster-webserver -h '0.0.0.0' -p '3000' -w workspace.yaml
+    container_name: webserver
+    env_file:
+      - .env
+    expose:
+      - '3000'
+    ports:
+      - '3000:3000'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/io_manager_storage:/tmp/io_manager_storage
+    networks:
+      - dagster
+    depends_on:
+      code-uni:
+        condition: service_started
+
+  daemon:
+    image: ghcr.io/rvernica/dagster-deploy:latest
+    entrypoint:
+      - dagster-daemon
+      - run
+    restart: on-failure
+    env_file:
+      - .env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/io_manager_storage:/tmp/io_manager_storage
+    networks:
+      - dagster
+    depends_on:
+      code-uni:
+        condition: service_started
+
+networks:
+  dagster:
+    driver: bridge

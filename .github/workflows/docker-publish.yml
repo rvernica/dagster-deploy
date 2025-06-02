@@ -3,7 +3,7 @@ name: Docker Publish
 on:
   push:
     branches:
-      - master # Or your default branch
+      - main # Or your default branch
 
 env:
   REGISTRY: ghcr.io
